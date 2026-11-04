@@ -20,6 +20,8 @@
 
 ## 手工回归清单
 
+补充自动化：三类 Chrome 视口均已验证 AI 中途取消、GIF 中途取消、取消后再次导出 PNG，3 项通过。加上此前 12 项闭环，共 15 项 Chrome 浏览器检查。
+
 - [ ] 相册与摄像头选择 JPEG、透明 PNG、WebP；设备 EXIF 方向正确。
 - [ ] 大于 15 MB、4000 万像素、HEIC、损坏图与空文件均不覆盖已有素材。
 - [ ] 套索越过边界、少于 3 点、曲线、重复相交；橡皮擦/恢复不同笔宽、边缘半透明。
@@ -48,4 +50,6 @@ AI 需要 WebAssembly SIMD、Worker、createImageBitmap、OffscreenCanvas；较�
 
 ## 发布记录
 
-本地 23 项单元测试、12 项浏览器闭环、1 项真实 AI 冷启动均通过；三类视口均完成真实浏览器触控事件路径。普通回归中的 3 个真实 AI 项默认跳过，只在 opt-in 专项中执行桌面验证。生产构建和 /crazyGIF/ 子路径通过。GitHub Pages 线上结果以工作流和站点验收为准。
+本地 23 项单元测试、12 项浏览器闭环、1 项真实 AI 冷启动均通过；三类视口均完成真实浏览器触控事件路径。普通回归中的 3 个真实 AI 项默认跳过，只在 opt-in 专项中执行桌面验证。生产构建和 /crazyGIF/ 子路径通过。
+
+2026-11-04 已部署到 <https://eveiscoding.github.io/crazyGIF/>，应用版本 `9daec25141589518a88653e6de88e935fa1f4dde`，[Actions 发布记录](https://github.com/eveiscoding/crazyGIF/actions/runs/41860908452) 全部成功，包括 Linux Chromium 三尺寸回归。使用 TEST_BASE_URL 指向真实线上地址后，桌面 Chrome 的 5 项实测全部通过：真实 AI 冷启动（含模型下载、推理、GIF 导出整项 19.9 秒）、四模板 GIF、手动精修和 PNG、AI 断网降级、透明 GIF 与真实触控事件拖动。未将桌面引擎或手机视口模拟标作真机测试。

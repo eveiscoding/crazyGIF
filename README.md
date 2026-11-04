@@ -2,7 +2,7 @@
 
 手机优先的纯前端表情包工具。React + TypeScript + Vite，Canvas 预览，Web Worker 本地 GIF 编码。素材不上传；无账号、后端、云函数、对象存储或数据库。
 
-目标站点：<https://eveiscoding.github.io/crazyGIF/>（以 GitHub Actions 实际部署成功为准）。
+已上线：<https://eveiscoding.github.io/crazyGIF/>。GitHub Actions 构建、测试与部署均已通过，线上真实 AI 和 GIF/PNG 闭环已验收。
 
 ## 本地运行
 
