@@ -1,6 +1,43 @@
 import { test, expect } from "@playwright/test";
 import { GifReader } from "omggif";
 
+test("cancelling AI and GIF releases editing and allows a new export", async ({
+  page,
+  context,
+}) => {
+  let release!: () => void;
+  const blocked = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await context.route("https://staticimgly.com/**", async (route) => {
+    await blocked;
+    await route.abort().catch(() => {});
+  });
+  await page.goto("./");
+  await page.getByRole("button", { name: /选素材/ }).click();
+  const supportsAi = await page.evaluate(() =>
+    Boolean(
+      window.WebAssembly &&
+      window.Worker &&
+      window.OffscreenCanvas &&
+      window.createImageBitmap,
+    ),
+  );
+  await page.getByRole("button", { name: /AI 自动抠图/ }).click();
+  if (supportsAi) {
+    await page.getByRole("button", { name: "取消抠图", exact: true }).click();
+    await expect(page.getByRole("status")).toContainText("自动抠图已取消");
+  } else {
+    await expect(page.getByRole("status")).toContainText("不支持本地 AI");
+  }
+  release();
+  await page.getByRole("button", { name: /导出 GIF/ }).click();
+  await page.getByRole("button", { name: "取消", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("导出已取消");
+  await page.getByRole("button", { name: /导出封面/ }).click();
+  await expect(page.getByRole("link", { name: "下载 PNG" })).toBeVisible();
+});
+
 test("four templates export real worker GIFs with no AI requests on load", async ({
   page,
 }) => {
@@ -52,13 +89,11 @@ test("transparent PNG import, erase, undo, redo, restore, lasso and PNG cover", 
     g.fillRect(12, 12, 104, 104);
     return c.toDataURL("image/png");
   });
-  await page
-    .locator("input[type=file]")
-    .setInputFiles({
-      name: "transparent-test.png",
-      mimeType: "image/png",
-      buffer: Buffer.from(dataUrl.split(",")[1], "base64"),
-    });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "transparent-test.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(dataUrl.split(",")[1], "base64"),
+  });
   await expect(
     page.getByText("transparent-test.png", { exact: false }),
   ).toBeVisible();

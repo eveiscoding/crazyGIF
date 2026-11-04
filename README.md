@@ -16,6 +16,8 @@ npm run build
 npm run preview
 ```
 
+浏览器回归：`npm run test:e2e`（本机已安装 Chrome）；可选 WebKit 引擎检查先运行 `npx playwright install webkit`，再运行 `npx playwright test -c playwright.webkit.config.ts`。实际设备验收矩阵和线上实测记录见测试清单，模拟视口不替代真机。
+
 ## 已实现闭环
 
 - 上传 JPEG / PNG / WebP，最大 15 MB / 4000 万像素；透明 PNG 可直接使用。

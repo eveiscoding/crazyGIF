@@ -32,6 +32,8 @@ GitHub Pages 静态部署与 AI 模型下载是两条链路：站点可加载不
 
 本地验证记录：已在桌面 Chrome、`crossOriginIsolated=false` 的静态构建页完成一次真实模型冷下载、推理和 GIF 导出，整项 Playwright 用例 17.2 秒。该结果证明本实现不强制依赖 Pages 的隔离响应头，不代表 Safari、微信或低内存设备已经通过验收。
 
+线上验证：真实 GitHub Pages 地址的桌面 Chrome 同一闭环通过（整项约 19.9 秒）。Windows WebKit 27.2、iPhone 13 模拟视口下 OffscreenCanvas=false，AI 正确停止在能力检测并展示手动/透明 PNG 回退，普通编辑与导出通过。此结果仅属于 Windows WebKit 引擎，不能据此推断 iOS Safari 是否具备 OffscreenCanvas 或能否完成推理。
+
 - [库与许可证](https://github.com/imgly/background-removal-js)
 - [Web 使用和模型大小、COOP/COEP](https://github.com/imgly/background-removal-js/blob/main/packages/web/README.md)
 - [配置定义](https://github.com/imgly/background-removal-js/blob/main/packages/web/src/schema.ts)

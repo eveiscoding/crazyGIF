@@ -22,6 +22,10 @@
 
 补充自动化：三类 Chrome 视口均已验证 AI 中途取消、GIF 中途取消、取消后再次导出 PNG，3 项通过。加上此前 12 项闭环，共 15 项 Chrome 浏览器检查。
 
+补充 WebKit：Windows Playwright WebKit 27.2（iPhone 13 视口）访问真实 Pages 地址，4 项通过：能力回退/取消恢复、四模板 GIF、透明 PNG 导入与完整手工精修/PNG 导出、AI 不可用后仍可导出。该引擎检测值：WebAssembly=true、Worker=true、OffscreenCanvas=false、createImageBitmap=true、crossOriginIsolated=false；因此 AI 被能力门槛阻止，已验证提示和替代路径，不标记为 AI 推理通过。该结果不是 iPhone Safari 真机测试。浏览器 CDP 触控拖动专项只在 Chromium 运行，WebKit 配置明确排除；真实 AI 专项默认跳过。
+
+复测 WebKit：`npx playwright install webkit` 后运行 `npx playwright test -c playwright.webkit.config.ts`；可设置 TEST_BASE_URL 指向线上站点。配置将 Chrome channel 从通用设置移除，避免引擎串用。
+
 - [ ] 相册与摄像头选择 JPEG、透明 PNG、WebP；设备 EXIF 方向正确。
 - [ ] 大于 15 MB、4000 万像素、HEIC、损坏图与空文件均不覆盖已有素材。
 - [ ] 套索越过边界、少于 3 点、曲线、重复相交；橡皮擦/恢复不同笔宽、边缘半透明。
