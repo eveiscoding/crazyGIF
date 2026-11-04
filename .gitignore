@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.local
+test-results/
+.local/
+playwright-report/
+.DS_Store
+*.tsbuildinfo
