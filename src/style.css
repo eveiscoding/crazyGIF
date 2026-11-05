@@ -1612,3 +1612,18 @@ select {
   padding: 1px 7px;
   border-radius: 4px;
 }
+/* Keep the disabled fieldset semantics without an anonymous layout box
+   intercepting controls after narrow-viewport scrolling in Chromium. */
+.editor-content > fieldset {
+  display: contents;
+}
+@media (max-width: 700px) {
+  html {
+    scroll-padding-bottom: 110px;
+  }
+  .editor-content button,
+  .editor-content input,
+  .editor-content select {
+    scroll-margin-block: 110px;
+  }
+}
