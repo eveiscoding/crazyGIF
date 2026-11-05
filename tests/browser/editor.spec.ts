@@ -159,8 +159,9 @@ test("transparent PNG import, erase, undo, redo, restore, lasso and PNG cover", 
   await page.getByRole("button", { name: /导出封面/ }).click();
   const img = page.getByRole("img", { name: /生成的 PNG/ });
   await expect(img).toBeVisible();
-  const info = await img.evaluate(async (el: HTMLImageElement) => {
-    await el.decode();
+  await expect(img).toHaveJSProperty("complete", true);
+  await expect(img).toHaveJSProperty("naturalWidth", 320);
+  const info = await img.evaluate((el: HTMLImageElement) => {
     const c = document.createElement("canvas");
     c.width = c.height = 320;
     const g = c.getContext("2d")!;
@@ -173,10 +174,6 @@ test("transparent PNG import, erase, undo, redo, restore, lasso and PNG cover", 
     };
   });
   expect(info).toEqual({ width: 320, height: 320, alpha: 0, centerAlpha: 255 });
-  await page.screenshot({
-    path: `test-results/${test.info().project.name}-editor.png`,
-    fullPage: true,
-  });
 });
 
 test("AI network failure releases controls and preserves local export", async ({

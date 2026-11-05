@@ -10,6 +10,7 @@ export default defineConfig({
     baseURL: process.env.TEST_BASE_URL || localUrl,
     channel: process.env.CI ? undefined : "chrome",
     screenshot: "only-on-failure",
+    trace: "retain-on-failure",
   },
   projects: [
     {
