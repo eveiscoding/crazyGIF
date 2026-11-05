@@ -1,4 +1,33 @@
-import type { Settings, Template } from "./types";
+import type { Settings, Template, RenderLayer, TextMotion } from "./types";
+
+export function textPose(
+  motion: TextMotion,
+  phase: number,
+  intensity: number,
+  speed: number,
+) {
+  const wave = phase * Math.PI * 2 * Math.max(1, Math.round(speed * 2));
+  switch (motion) {
+    case "bounce":
+      return {
+        x: 0,
+        y: -Math.pow(Math.sin(wave), 2) * 14 * intensity,
+        r: 0,
+        s: 1,
+      };
+    case "shake":
+      return {
+        x: Math.sin(wave) * 9 * intensity,
+        y: 0,
+        r: Math.sin(wave) * 0.035 * intensity,
+        s: 1,
+      };
+    case "pulse":
+      return { x: 0, y: 0, r: 0, s: 1 + Math.sin(wave) * 0.08 * intensity };
+    default:
+      return { x: 0, y: 0, r: 0, s: 1 };
+  }
+}
 
 export function pose(
   template: Template,
@@ -43,7 +72,7 @@ export function pose(
 
 export function render(
   ctx: CanvasRenderingContext2D,
-  subject: HTMLCanvasElement,
+  subject: HTMLCanvasElement | RenderLayer[],
   settings: Settings,
   phase: number,
   animate = true,
@@ -59,22 +88,35 @@ export function render(
   const p = animate
     ? pose(settings.template, phase, settings.intensity, settings.speed)
     : { x: 0, y: 0, r: 0, s: 1 };
-  ctx.save();
-  ctx.translate(160 + settings.x + p.x, 158 + settings.y + p.y);
-  ctx.rotate((settings.rotation * Math.PI) / 180 + p.r);
-  ctx.scale(settings.scale * p.s, settings.scale * p.s);
-  ctx.drawImage(subject, -125, -125, 250, 250);
-  ctx.restore();
+  const layers: RenderLayer[] = Array.isArray(subject)
+    ? subject
+    : [{ subject, ...settings }];
+  for (const layer of layers) {
+    ctx.save();
+    ctx.translate(160 + layer.x + p.x, 158 + layer.y + p.y);
+    ctx.rotate((layer.rotation * Math.PI) / 180 + p.r);
+    ctx.scale(layer.scale * p.s, layer.scale * p.s);
+    ctx.drawImage(layer.subject, -125, -125, 250, 250);
+    ctx.restore();
+  }
   if (settings.caption) {
+    const t = animate
+      ? textPose(settings.textMotion, phase, settings.intensity, settings.speed)
+      : textPose("none", 0, 0, 0);
+    ctx.save();
+    ctx.translate(160 + t.x, 287 + t.y);
+    ctx.rotate(t.r);
+    ctx.scale(t.s, t.s);
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = `900 ${settings.textSize}px system-ui, sans-serif`;
     ctx.lineJoin = "round";
     ctx.lineWidth = 5;
     ctx.strokeStyle = "#252525";
-    ctx.strokeText(settings.caption, 160, 287, 290);
+    ctx.strokeText(settings.caption, 0, 0, 280);
     ctx.fillStyle = settings.textColor;
-    ctx.fillText(settings.caption, 160, 287, 290);
+    ctx.fillText(settings.caption, 0, 0, 280);
+    ctx.restore();
   }
   ctx.restore();
 }

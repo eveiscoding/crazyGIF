@@ -1,5 +1,19 @@
 export type Template = "shake" | "dance" | "rise" | "twitch";
 export type Tool = "move" | "lasso" | "erase" | "restore";
+export type TextMotion = "none" | "bounce" | "shake" | "pulse";
+export interface Transform {
+  x: number;
+  y: number;
+  scale: number;
+  rotation: number;
+}
+export interface Layer extends Transform {
+  id: string;
+  assetId: string;
+}
+export interface RenderLayer extends Transform {
+  subject: HTMLCanvasElement;
+}
 export interface Settings {
   template: Template;
   scale: number;
@@ -10,6 +24,7 @@ export interface Settings {
   caption: string;
   textColor: string;
   textSize: number;
+  textMotion: TextMotion;
   speed: number;
   intensity: number;
   duration: number;
@@ -21,9 +36,10 @@ export const defaults: Settings = {
   y: 0,
   rotation: 0,
   background: "#e8f59b",
-  caption: "今天也要发疯！",
+  caption: "我也可以动哦",
   textColor: "#ffffff",
   textSize: 29,
+  textMotion: "bounce",
   speed: 1,
   intensity: 0.6,
   duration: 2,

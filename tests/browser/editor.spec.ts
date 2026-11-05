@@ -49,7 +49,7 @@ test("four templates export real worker GIFs with no AI requests on load", async
       modelRequests.push(r.url());
   });
   await page.goto("./");
-  await expect(page.getByRole("heading", { name: /让你的快乐/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "鬼畜制造所" })).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -95,9 +95,14 @@ test("transparent PNG import, erase, undo, redo, restore, lasso and PNG cover", 
     buffer: Buffer.from(dataUrl.split(",")[1], "base64"),
   });
   await expect(
-    page.getByText("transparent-test.png", { exact: false }),
+    page
+      .locator(".asset-list")
+      .getByText("transparent-test.png", { exact: false }),
   ).toBeVisible();
-  await page.getByRole("button", { name: /橡皮擦/ }).click();
+  await page
+    .locator(".tools")
+    .getByRole("button", { name: "橡皮擦", exact: true })
+    .click();
   const preview = page.locator("canvas");
   const centerClick = async () => {
     await preview.scrollIntoViewIfNeeded();
@@ -120,7 +125,10 @@ test("transparent PNG import, erase, undo, redo, restore, lasso and PNG cover", 
   await page.locator(".tools").getByRole("button", { name: /恢复/ }).click();
   await centerClick();
   await expect.poll(pixel).toBe(before);
-  await page.getByRole("button", { name: /套索保留/ }).click();
+  await page
+    .locator(".tools")
+    .getByRole("button", { name: "套索保留", exact: true })
+    .click();
   await preview.scrollIntoViewIfNeeded();
   const bounds = (await preview.boundingBox())!;
   await page.mouse.move(
@@ -143,7 +151,7 @@ test("transparent PNG import, erase, undo, redo, restore, lasso and PNG cover", 
   await expect(
     page.getByRole("button", { name: "↶ 撤销", exact: true }),
   ).toBeEnabled();
-  await page.getByRole("button", { name: /调个味/ }).click();
+  await page.getByRole("button", { name: "构图与文字", exact: true }).click();
   await page
     .getByRole("button", { name: "背景 transparent", exact: true })
     .click();
@@ -193,8 +201,8 @@ test("1.5 second transparent GIF and touch drag stay within page", async ({
   context,
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: /调个味/ }).click();
   await page.getByRole("button", { name: "1.5 秒", exact: true }).click();
+  await page.getByRole("button", { name: "构图与文字", exact: true }).click();
   await page
     .getByRole("button", { name: "背景 transparent", exact: true })
     .click();

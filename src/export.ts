@@ -1,8 +1,8 @@
 import { canvas, render } from "./render";
-import type { Settings } from "./types";
+import type { Settings, RenderLayer } from "./types";
 
 export function exportGif(
-  subject: HTMLCanvasElement,
+  subject: HTMLCanvasElement | RenderLayer[],
   settings: Settings,
   progress: (n: number) => void,
   signal: AbortSignal,
@@ -72,7 +72,7 @@ export function exportGif(
 }
 
 export function exportPng(
-  subject: HTMLCanvasElement,
+  subject: HTMLCanvasElement | RenderLayer[],
   settings: Settings,
 ): Promise<Blob> {
   const c = canvas(320);

@@ -1,9 +1,29 @@
 import { describe, it, expect } from "vitest";
 import { GifReader } from "omggif";
-import { pose } from "../src/render";
+import { pose, textPose } from "../src/render";
 import { MaskHistory } from "../src/history";
 import { createEncoder, addFrame } from "../src/encode";
-import { templates } from "../src/types";
+import { defaults, templates } from "../src/types";
+
+describe("caption animation", () => {
+  it("starts with the requested caption and an enabled effect", () => {
+    expect(defaults.caption).toBe("我也可以动哦");
+    expect(defaults.textMotion).toBe("bounce");
+  });
+  for (const motion of ["none", "bounce", "shake", "pulse"] as const) {
+    it(`${motion} closes its loop and respects zero intensity`, () => {
+      const first = textPose(motion, 0, 1, 1.7),
+        last = textPose(motion, 1, 1, 1.7);
+      for (const key of ["x", "y", "r", "s"] as const)
+        expect(first[key]).toBeCloseTo(last[key]);
+      const p = textPose(motion, 0.19, 0, 1);
+      expect(p.x).toBeCloseTo(0);
+      expect(p.y).toBeCloseTo(0);
+      expect(p.r).toBeCloseTo(0);
+      expect(p.s).toBeCloseTo(1);
+    });
+  }
+});
 
 describe("loop motion", () => {
   it("zero intensity leaves the composition still for every template", () => {
